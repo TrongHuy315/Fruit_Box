@@ -1,9 +1,6 @@
 package Source.Components;
 
-import javafx.scene.Node;
-
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;

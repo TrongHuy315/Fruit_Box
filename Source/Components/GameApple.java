@@ -1,4 +1,3 @@
-// File: Source/Components/GameApple.java
 package Source.Components;
 
 import javafx.geometry.VPos;
@@ -20,7 +19,6 @@ public class GameApple extends Group {
     private double visualScale;
 
     /**
-     * Tạo một đối tượng GameApple với đồ họa chi tiết.
      * @param layoutX Vị trí X của góc trên trái GameApple trên Pane
      * @param layoutY Vị trí Y của góc trên trái GameApple trên Pane
      * @param scale   Kích thước tổng thể của quả táo (ví dụ: chiều rộng/cao của vùng bao)
@@ -79,14 +77,12 @@ public class GameApple extends Group {
 
         // Căn chỉnh Text. Lấy bounds sau khi setFont.
         double textWidth = numberText.getLayoutBounds().getWidth();
-        double textHeight = numberText.getLayoutBounds().getHeight(); // Có thể dùng để căn Y chính xác hơn
+        double textHeight = numberText.getLayoutBounds().getHeight();
         numberText.setX(centerX_relative - textWidth / 2);
         numberText.setY(centerY_relative + textHeight / 4); // Thử nghiệm vị trí Y
 
-        // Thêm các bộ phận vào Group này (GameApple)
         this.getChildren().addAll(appleBody, stem, numberText);
 
-        // Đặt vị trí X, Y cho toàn bộ GameApple (Group này) trên Pane cha
         this.setLayoutX(layoutX);
         this.setLayoutY(layoutY);
     }

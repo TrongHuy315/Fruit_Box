@@ -1,8 +1,8 @@
 package Source.Bot.Bot_1;
 
 public class SubMatrixChoice {
-    private int r1, c1, r2, c2; // Tọa độ góc trên trái và dưới phải
-    private int nonZeroElements; // Số lượng phần tử khác 0 trong ma trận con này
+    private int r1, c1, r2, c2;
+    private int nonZeroElements;
 
     public SubMatrixChoice(int r1, int c1, int r2, int c2, int nonZeroElements) {
         this.r1 = r1;

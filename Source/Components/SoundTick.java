@@ -1,7 +1,5 @@
 package Source.Components;
 
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 
 public class SoundTick extends CheckBox {

@@ -129,13 +129,9 @@ public class Game {
                     return null;
                 }
 
-                // Tính toán tọa độ gốc của lưới game trên MÀN HÌNH
-                // Điều này cần gamePane đã được hiển thị và có parent là Scene và Window
                 double gridScreenOriginX = 0;
                 double gridScreenOriginY = 0;
 
-                // Cần chạy trên UI thread để lấy tọa độ chính xác
-                // Sử dụng CountDownLatch để chờ kết quả từ UI thread
                 java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
                 double[] screenCoords = new double[2];
 
@@ -165,7 +161,6 @@ public class Game {
 
 
                 while (isBotPlaying && !isGameOver && !Thread.currentThread().isInterrupted()) {
-                    // 1. Cập nhật trạng thái game hiện tại cho bot
                     int[][] currentBoardForBot = new int[row][col];
                     for (int i = 0; i < row; i++) {
                         for (int j = 0; j < col; j++) {
@@ -174,7 +169,6 @@ public class Game {
                     }
                     gameBotOptimizer.updateMatrix(currentBoardForBot);
 
-                    // 2. Bot tìm nước đi tốt nhất
                     SubMatrixChoice bestChoice = gameBotOptimizer.findBestSubmatrix();
 
                     if (bestChoice == null) {
@@ -182,17 +176,14 @@ public class Game {
                         break; // Dừng vòng lặp của bot
                     }
 
-                    // 3. Bot thực hiện hành động bằng Robot
                     gameBotOptimizer.performRobotAction(awtRobot,
                             gridScreenOriginX, gridScreenOriginY,
                             apple_cell_width, apple_cell_height, // Kích thước pixel của ô
                             bestChoice);
 
-                    // 4. Chờ một chút để game xử lý sự kiện chuột và cập nhật UI
                     // Robot đã có delay, nhưng có thể cần thêm ở đây nếu game xử lý chậm
                     Thread.sleep(300); // Tăng/giảm nếu cần
 
-                    // Kiểm tra lại isGameOver sau khi bot thực hiện, vì game có thể kết thúc do hết giờ
                     if (isGameOver) break;
                 }
                 return null;
@@ -201,7 +192,7 @@ public class Game {
             @Override
             protected void succeeded() {
                 super.succeeded();
-                if (isBotPlaying) { // Nếu bot tự dừng (ví dụ hết nước đi)
+                if (isBotPlaying) {
                     javafx.application.Platform.runLater(() -> stopBot());
                 }
                 System.out.println("Bot task finished successfully.");
@@ -273,11 +264,10 @@ public class Game {
     }
 
     private void setupScoreDisplay() {
-        // Vị trí ví dụ cho score display
         double scoreDisplayX = gamePane.getWidth() - 160; // Căn phải
-        if (gamePane.getWidth() == 0) scoreDisplayX = 840; // Giá trị mặc định nếu pane chưa có kích thước
+        if (gamePane.getWidth() == 0) scoreDisplayX = 840;
         double scoreDisplayY = 10;
-        double scoreDisplayScale = 100; // Kích thước của "quả táo điểm"
+        double scoreDisplayScale = 100;
 
         scoreDisplay = new ScoreDisplay(scoreDisplayX, scoreDisplayY, scoreDisplayScale);
         if (!this.gamePane.getChildren().contains(scoreDisplay)) {
@@ -287,29 +277,27 @@ public class Game {
     }
 
     private void setupPlayAgainButton() {
-        // Vị trí ví dụ cho nút Play Again, có thể ở giữa màn hình khi game over
-        double buttonX = gamePane.getWidth() / 2 - 75; // Căn giữa
-        if (gamePane.getWidth() == 0) buttonX = 425; // Giá trị mặc định
+        double buttonX = gamePane.getWidth() / 2 - 75;
+        if (gamePane.getWidth() == 0) buttonX = 425;
         double buttonY = gamePane.getHeight() / 2 + 50;
-        if (gamePane.getHeight() == 0) buttonY = 350; // Giá trị mặc định
+        if (gamePane.getHeight() == 0) buttonY = 350;
 
         playAgainButton = new PlayAgainButton("PLAY AGAIN", buttonX, buttonY);
         playAgainButton.setOnClick(_ -> {
-            // Hành động khi bấm nút Play Again
-            hideGameOverUI(); // Ẩn các UI của game over
-            startGame();      // Bắt đầu lại game
+            hideGameOverUI();
+            startGame();
         });
         if (!this.gamePane.getChildren().contains(playAgainButton)) {
             this.gamePane.getChildren().add(playAgainButton);
         }
-        playAgainButton.hide(); // Ban đầu ẩn
+        playAgainButton.hide();
     }
 
     private void handleGameOver() {
         if (isGameOver) return;
 
         isGameOver = true;
-        if (isBotPlaying) { // Nếu bot đang chạy thì dừng nó lại
+        if (isBotPlaying) {
             stopBot();
         }
 
@@ -325,7 +313,6 @@ public class Game {
     }
 
     private void updateUILayouts() {
-        // Cập nhật vị trí cho ScoreDisplay
         double scoreDisplayX = Math.max(10, gamePane.getWidth() - 160);
         scoreDisplay.setLayoutX(scoreDisplayX);
         scoreDisplay.setLayoutY(10);
@@ -336,13 +323,8 @@ public class Game {
         playAgainButton.setLayoutX(buttonX);
         playAgainButton.setLayoutY(buttonY);
         
-        // Cập nhật vị trí cho BotPlayButton
         double botButtonX = Math.max(10, gamePane.getWidth() - 100 - botPlayButton.getWidth()); // Căn phải, cách lề 100
-        // Hoặc một vị trí cố định khác
-        // double botButtonX = 10; // Căn trái gần Time
-        // botPlayButton.setLayoutX(botButtonX);
-        // botPlayButton.setLayoutY(40); // Dưới Time
-        // Vị trí hiện tại:
+
         botPlayButton.setLayoutX(Math.max(10, gamePane.getWidth() - botPlayButton.getWidth() - 10)); // Căn phải, cách lề 10
         botPlayButton.setLayoutY(10);
 
@@ -418,10 +400,6 @@ public class Game {
         for (int i = 0; i < count6_9; i++) {
             numbers.add(random.nextInt(4) + 6); // Generates 6, 7, 8, 9
         }
-        
-        // For debugging, you can print the counts:
-        // System.out.println(String.format("Counts: 1-4: %d, 5: %d, 6-9: %d, Total: %d",
-        // count1_4, count5, count6_9, numbers.size()));
 
         return numbers;
     }

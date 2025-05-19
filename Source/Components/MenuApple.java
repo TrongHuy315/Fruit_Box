@@ -2,14 +2,14 @@ package Source.Components;
 
 import javafx.animation.RotateTransition;
 import javafx.geometry.VPos;
-import javafx.scene.Group; // Thêm import Group
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
-import javafx.scene.text.Font;        // Thêm import Font
-import javafx.scene.text.FontWeight;  // Thêm import FontWeight
-import javafx.scene.text.Text;        // Thêm import Text
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
@@ -20,7 +20,6 @@ public class MenuApple {
     private RotateTransition rotate;
 
     /**
-     * Tạo một đối tượng quả táo cho menu.
      * @param centerX Tọa độ X của tâm quả táo (ước lượng)
      * @param centerY Tọa độ Y của tâm quả táo (ước lượng)
      * @param scale   Kích thước tổng thể của quả táo
@@ -28,7 +27,7 @@ public class MenuApple {
     public MenuApple(double centerX, double centerY, double scale, int number) {
         // --- Vẽ thân táo (Apple Body) ---
         Path appleBody = new Path();
-        double bodyRadius = scale * 0.9; // Bán kính phần thân, nhỏ hơn scale một chút
+        double bodyRadius = scale * 0.9;
         double topIndentY = centerY - bodyRadius * 0.3; // Độ lõm phía trên
         double bottomY = centerY + bodyRadius;          // Điểm thấp nhất
         double sideBulgeX = bodyRadius * 1.0;         // Độ phình ra hai bên
@@ -57,16 +56,14 @@ public class MenuApple {
         appleBody.setStrokeWidth(scale * 0.05); // Độ dày viền tỉ lệ với kích thước
 
         // --- Vẽ cuống táo (Stem) ---
-        // Hình chữ nhật nhỏ màu nâu phía trên vết lõm
         Rectangle stem = new Rectangle(
                 centerX - scale * 0.08, centerY - bodyRadius * 0.6, // Vị trí x, y
                 scale * 0.16, bodyRadius * 0.5                  // Chiều rộng, chiều cao
         );
-        stem.setFill(Color.SADDLEBROWN); // Màu cuống (nâu)
+        stem.setFill(Color.SADDLEBROWN); // Màu cuống
 
         // --- Vẽ lá táo (Leaf) ---
         Path leaf = new Path();
-        // Xác định các điểm neo và kiểm soát cho lá (vị trí tương đối với tâm)
         double leafStartX = centerX + scale * 0.05;
         double leafStartY = centerY - bodyRadius * 0.35;
         double leafEndX = centerX + scale * 0.6;
@@ -88,22 +85,21 @@ public class MenuApple {
         leaf.setStrokeWidth(scale * 0.03);  // Viền lá mỏng hơn
 
         // --- Tạo đối tượng Text cho số ---
-        numberText = new Text(String.valueOf(number)); // Đặt nội dung text
-        numberText.setFont(Font.font("Arial", FontWeight.BOLD, scale * 0.7)); // Chọn Font, đậm, kích thước tỉ lệ với scale
-        numberText.setFill(Color.WHITE); // Đặt màu chữ trắng
-        numberText.setTextAlignment(TextAlignment.CENTER); // Căn giữa text theo chiều ngang
-        numberText.setTextOrigin(VPos.CENTER); // Căn giữa text theo chiều dọc
-        numberText.setX(centerX - scale * 0.2); // Đặt vị trí X tại tâm ngang của táo
-        numberText.setY(centerY + scale * 0.3); // Đặt vị trí Y hơi thấp hơn tâm một chút cho đẹp mắt
+        numberText = new Text(String.valueOf(number));
+        numberText.setFont(Font.font("Arial", FontWeight.BOLD, scale * 0.7));
+        numberText.setFill(Color.WHITE);
+        numberText.setTextAlignment(TextAlignment.CENTER);
+        numberText.setTextOrigin(VPos.CENTER);
+        numberText.setX(centerX - scale * 0.2);
+        numberText.setY(centerY + scale * 0.3);
 
         // --- Gom các bộ phận vào Group ---
-        // Đặt thân táo ở lớp dưới cùng, sau đó đến cuống và lá
         appleGroup = new Group(appleBody, stem, leaf, numberText);
 
         // --- Hiệu ứng xoay (Animation) ---
         // Áp dụng hiệu ứng xoay cho cả Group
         rotate = new RotateTransition(Duration.seconds(1.5), appleGroup); // Tăng thời gian cho mượt hơn
-        rotate.setByAngle(10); // Giảm góc xoay một chút cho tinh tế hơn
+        rotate.setByAngle(10);
         rotate.setCycleCount(RotateTransition.INDEFINITE);
         rotate.setAutoReverse(true);
     }
@@ -113,7 +109,7 @@ public class MenuApple {
      * @param pane Pane để hiển thị quả táo.
      */
     public void render(Pane pane) {
-        pane.getChildren().add(appleGroup); // Thêm Group vào Pane
+        pane.getChildren().add(appleGroup);
         rotate.play();
     }
 

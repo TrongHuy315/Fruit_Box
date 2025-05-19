@@ -13,9 +13,7 @@ public class PlayAgainButton extends Button {
         this.setLayoutX(layoutX);
         this.setLayoutY(layoutY);
         this.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        // Bạn có thể thêm style cho button ở đây nếu muốn
-        // ví dụ: this.setStyle("-fx-background-color: lightgreen; -fx-text-fill: white;");
-        this.setVisible(false); // Ban đầu ẩn
+        this.setVisible(false);
     }
 
     public void setOnClick(EventHandler<ActionEvent> handler) {

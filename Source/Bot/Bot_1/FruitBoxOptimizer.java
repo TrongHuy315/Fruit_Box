@@ -1,21 +1,20 @@
-package Source.Bot.Bot_1; // Hoặc package phù hợp
+package Source.Bot.Bot_1;
 
-import java.awt.Robot; // Chỉ import, không tạo instance ở đây trừ khi cần cho việc khác
+import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class FruitBoxOptimizer {
-    private int[][] matrix; // Ma trận nội bộ của bot để tính toán
+    private int[][] matrix;
     private int rows;
     private int cols;
 
-    // Constructor này sẽ được dùng để kiểm tra nước đi hoặc khi bot chỉ cần logic
     public FruitBoxOptimizer(int[][] initialMatrix) {
         this.rows = initialMatrix.length;
         this.cols = initialMatrix[0].length;
-        this.matrix = new int[rows][cols]; // Tạo bản sao
+        this.matrix = new int[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 this.matrix[i][j] = initialMatrix[i][j];
@@ -23,10 +22,8 @@ public class FruitBoxOptimizer {
         }
     }
 
-    // Cập nhật ma trận nội bộ của bot với trạng thái game mới nhất
     public void updateMatrix(int[][] currentActualBoard) {
         if (currentActualBoard.length != this.rows || currentActualBoard[0].length != this.cols) {
-            // Kích thước thay đổi, cần khởi tạo lại (ít khả năng xảy ra trong game này)
             this.rows = currentActualBoard.length;
             this.cols = currentActualBoard[0].length;
             this.matrix = new int[this.rows][this.cols];
@@ -38,9 +35,7 @@ public class FruitBoxOptimizer {
         }
     }
 
-
-    // Tìm ma trận con tốt nhất dựa trên trạng thái matrix hiện tại của bot
-    public SubMatrixChoice findBestSubmatrix() { // Đổi tên thành public để Game có thể gọi kiểm tra
+    public SubMatrixChoice findBestSubmatrix() {
         List<SubMatrixChoice> validChoices = new ArrayList<>();
         for (int r1 = 0; r1 < rows; r1++) {
             for (int c1 = 0; c1 < cols; c1++) {
@@ -51,7 +46,7 @@ public class FruitBoxOptimizer {
                         boolean hasNonZero = false;
                         for (int i = r1; i <= r2; i++) {
                             for (int j = c1; j <= c2; j++) {
-                                currentSum += matrix[i][j]; // Sử dụng matrix nội bộ của bot
+                                currentSum += matrix[i][j];
                                 if (matrix[i][j] != 0) {
                                     nonZeroCount++;
                                     hasNonZero = true;
@@ -70,7 +65,6 @@ public class FruitBoxOptimizer {
             return null;
         }
 
-        // TỐI ƯU: Chọn ma trận con có NHIỀU phần tử khác 0 nhất.
         validChoices.sort(Comparator
                 .comparingInt(SubMatrixChoice::getNonZeroElements)
                 .thenComparingInt(SubMatrixChoice::getR1)
@@ -81,49 +75,31 @@ public class FruitBoxOptimizer {
         return validChoices.get(0);
     }
 
-    /**
-     * Thực hiện một bước đi của bot bằng cách điều khiển Robot.
-     *
-     * @param robotInstance      Đối tượng Robot đã được tạo.
-     * @param gridScreenOriginX  Tọa độ X trên màn hình của ô (0,0) trong lưới game.
-     * @param gridScreenOriginY  Tọa độ Y trên màn hình của ô (0,0) trong lưới game.
-     * @param cellPixelWidth     Chiều rộng pixel của một ô.
-     * @param cellPixelHeight    Chiều cao pixel của một ô.
-     * @param bestChoiceToPlay   Nước đi đã được chọn (từ findBestSubmatrix).
-     */
     public void performRobotAction(Robot robotInstance,
                                    double gridScreenOriginX, double gridScreenOriginY,
                                    double cellPixelWidth, double cellPixelHeight,
                                    SubMatrixChoice bestChoiceToPlay) {
         if (bestChoiceToPlay == null) return;
 
-        // Tính tọa độ tâm của ô bắt đầu (r1, c1) trên màn hình
         int screenX1 = (int) (gridScreenOriginX + bestChoiceToPlay.getC1() * cellPixelWidth);
         int screenY1 = (int) (gridScreenOriginY + (bestChoiceToPlay.getR1() + 1) * cellPixelHeight);
 
-        // Tính tọa độ tâm của ô kết thúc (r2, c2) trên màn hình
         int screenX2 = (int) (gridScreenOriginX + bestChoiceToPlay.getC2() * cellPixelWidth + cellPixelWidth);
         int screenY2 = (int) (gridScreenOriginY + (bestChoiceToPlay.getR2() + 1) * cellPixelHeight + cellPixelHeight);
 
-        // System.out.printf("Bot Action: Dragging from screen (%d,%d) to (%d,%d) for choice %s\n",
-        // screenX1, screenY1, screenX2, screenY2, bestChoiceToPlay.toString());
-
-        robotInstance.delay(150); // Delay nhỏ trước khi bắt đầu hành động
+        robotInstance.delay(150);
         robotInstance.mouseMove(screenX1, screenY1);
         robotInstance.delay(100);
         robotInstance.mousePress(InputEvent.BUTTON1_DOWN_MASK);
-        robotInstance.delay(100); // Giữ chuột một chút
+        robotInstance.delay(100);
         robotInstance.mouseMove(screenX2, screenY2);
         robotInstance.delay(100);
         robotInstance.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
-        robotInstance.delay(150); // Delay sau hành động để game có thời gian xử lý
+        robotInstance.delay(150);
 
         System.out.println(bestChoiceToPlay.getC1());
         System.out.println(bestChoiceToPlay.getR1());
         System.out.println(bestChoiceToPlay.getC2());
         System.out.println(bestChoiceToPlay.getR2());
     }
-
-    // Phương thức này không còn cần thiết nếu Game.java điều khiển vòng lặp và Robot
-    // public void playOptimal() { ... }
 }

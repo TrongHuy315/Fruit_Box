@@ -3,10 +3,9 @@ package Source.Components;
 import javafx.event.EventHandler;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
-import javafx.scene.Node; // Vẫn giữ lại nếu cần ở đâu đó
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane; // Cần cho tham số của render (nếu giữ lại)
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
@@ -16,7 +15,6 @@ import javafx.scene.text.TextAlignment;
 
 public class PlayApple extends Button {
     /**
-     * Tạo một đối tượng quả táo cho menu.
      * @param targetX Vị trí X mong muốn của PlayApple trong Pane cha
      * @param targetY Vị trí Y mong muốn của PlayApple trong Pane cha
      * @param scale   Kích thước tổng thể của quả táo
@@ -28,7 +26,7 @@ public class PlayApple extends Button {
 
         // --- Vẽ thân táo (Apple Body) ---
         Path appleBody = new Path();
-        double bodyRadius = scale * 0.45; // Điều chỉnh để vừa vặn
+        double bodyRadius = scale * 0.45;
         double topIndentY = centerY_relative - bodyRadius * 0.3;
         double bottomY = centerY_relative + bodyRadius;
         double sideBulgeX = bodyRadius * 1.0;
@@ -77,7 +75,7 @@ public class PlayApple extends Button {
         leaf.setStrokeWidth(scale * 0.03);
 
         // --- Text ---
-        Text strText = new Text(str); // Khai báo cục bộ, không cần biến instance
+        Text strText = new Text(str);
         strText.setFont(Font.font("Arial", FontWeight.BOLD, scale * 0.2));
         strText.setFill(Color.WHITE);
         strText.setTextAlignment(TextAlignment.CENTER);
@@ -93,14 +91,12 @@ public class PlayApple extends Button {
 
         this.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
 
-        // Đặt vị trí cho Button này trong Pane cha
         this.setLayoutX(targetX);
         this.setLayoutY(targetY);
     }
 
     /**
-     * Thêm PlayApple (Button này) vào Pane được chỉ định.
-     * @param pane Pane để hiển thị quả táo.
+     * @param pane
      */
     public void render(Pane pane) {
         pane.getChildren().add(this);
