@@ -2,6 +2,7 @@ package Source.Game;
 
 import java.awt.AWTException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -379,19 +380,73 @@ public class Game {
         if (playAgainButton != null) playAgainButton.hide();
     }
 
+    private List<Integer> generateNumbersWithDistribution() {
+        List<Integer> numbers = new ArrayList<>(row * col);
+        int totalCells = row * col;
+
+        int count1_4, count5, count6_9;
+
+        // Define target counts and ranges
+        int minCount1_4 = 80, maxCount1_4 = 90;
+        int minCount5 = 15, maxCount5 = 20;
+        // Range for count6_9 is derived: [65, 75]
+
+        // We need to pick count1_4 and count5 such that
+        // (totalCells - maxCount6_9) <= count1_4 + count5 <= (totalCells - minCount6_9)
+        // 170 - 75 = 95
+        // 170 - 65 = 105
+        // So, 95 <= count1_4 + count5 <= 105
+
+        do {
+            count1_4 = random.nextInt(maxCount1_4 - minCount1_4 + 1) + minCount1_4;
+            count5 = random.nextInt(maxCount5 - minCount5 + 1) + minCount5;
+        } while (!((count1_4 + count5 >= 95) && (count1_4 + count5 <= 105)));
+
+        count6_9 = totalCells - count1_4 - count5;
+
+        // Populate numbers for category 1-4
+        for (int i = 0; i < count1_4; i++) {
+            numbers.add(random.nextInt(4) + 1); // Generates 1, 2, 3, 4
+        }
+
+        // Populate numbers for category 5
+        for (int i = 0; i < count5; i++) {
+            numbers.add(5);
+        }
+
+        // Populate numbers for category 6-9
+        for (int i = 0; i < count6_9; i++) {
+            numbers.add(random.nextInt(4) + 6); // Generates 6, 7, 8, 9
+        }
+        
+        // For debugging, you can print the counts:
+        // System.out.println(String.format("Counts: 1-4: %d, 5: %d, 6-9: %d, Total: %d",
+        // count1_4, count5, count6_9, numbers.size()));
+
+        return numbers;
+    }
+
     private void initializeBoardData() {
         boardData.clear();
+        List<Integer> numbersToPlace = generateNumbersWithDistribution();
+        
+        // Shuffle the generated numbers to ensure random placement on the board
+        Collections.shuffle(numbersToPlace, random);
+
+        int listIndex = 0;
         for (int i = 0; i < row; i++) {
             ArrayList<Integer> sub = new ArrayList<>();
             for (int j = 0; j < col; j++) {
-                sub.add(randomNumber());
+                if (listIndex < numbersToPlace.size()) {
+                    sub.add(numbersToPlace.get(listIndex++));
+                } else {
+                    // Fallback, though this should not happen if generateNumbersWithDistribution is correct
+                    System.err.println("Error: Not enough numbers generated for the board. Adding 0.");
+                    sub.add(0); 
+                }
             }
             boardData.add(sub);
         }
-    }
-
-    private static int randomNumber() {
-        return random.nextInt(maxNum - minNum + 1) + minNum;
     }
 
     public void displayBoard() {

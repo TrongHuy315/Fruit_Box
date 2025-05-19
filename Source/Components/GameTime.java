@@ -1,7 +1,7 @@
 package Source.Components;
 
 public class GameTime {
-    private final long durationTime = 1 * 60 * 1000;
+    private final long durationTime = 2 * 60 * 1000;
 
     private long time;
 
