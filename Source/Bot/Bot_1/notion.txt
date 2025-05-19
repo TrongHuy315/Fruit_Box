@@ -1,0 +1,3 @@
++ Vùng chọn của bot đang to
++ Xếp thành queue để hạn chế quét, vì đang ưu tiên ít phần tử => Cải thiện tốc độ
++ ưu tiên tổng thể thay vì chỉ một số bước
